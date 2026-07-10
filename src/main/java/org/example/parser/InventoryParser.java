@@ -19,14 +19,22 @@ public class InventoryParser {
         return null; // placeholder until steps above are wired in
     }
 
-    public static void main(String[] args) {
-        // match the field order to your Part constructor's real parameter order
-        String testLine = "P001,Widget,AcmeCorp,19.99,100,Electronics,2023-01-15,";
-        try {
-            Part p = parseLine(testLine);
-            System.out.println(p);
-        } catch (Exception e) {
-            System.out.println("Failed to parse: " + e.getMessage());
+    private static char detectDelimiter(String line) {
+        char[] candidates = {',', '|', ';'};
+        for (char c : line.toCharArray()) {
+            for (char cand : candidates) {
+                if (c == cand) {
+                    return cand;
+                }
+            }
         }
+        return ','; // fallback default, matches assumptions.md
+    }
+
+    public static void main(String[] args) {
+        System.out.println(detectDelimiter("P001,Widget|AcmeCorp"));   // expect ,
+        System.out.println(detectDelimiter("P002;Widget,AcmeCorp"));   // expect ;
+        System.out.println(detectDelimiter("P003|Widget;AcmeCorp"));   // expect |
+        System.out.println(detectDelimiter("P004 Widget AcmeCorp"));   // expect , (fallback)
     }
 }

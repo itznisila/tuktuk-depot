@@ -34,3 +34,7 @@ blank cell in a table.
 **Limitation:** If "Unknown" is ever used in search/filter logic (e.g.
 filtering by supplier), it could group unrelated records together under
 one fake supplier name, which may need separate handling later.
+
+Delimiter detection: scan the line left to right; the first character
+that is `,`, `|`, or `;` becomes the delimiter for that line.
+If none is found, default to `,`.
