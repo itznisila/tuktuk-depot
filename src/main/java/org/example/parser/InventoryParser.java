@@ -9,8 +9,14 @@ public class InventoryParser {
             throw new ParseException("Empty or null line");
         }
 
-        // TODO Step 2: detect delimiter
-        // TODO Step 3: split and trim fields
+        char delim = detectDelimiter(line);
+
+        String[] rawFields = line.split(java.util.regex.Pattern.quote(String.valueOf(delim)), -1);
+        String[] fields = new String[rawFields.length];
+        for (int i = 0; i < rawFields.length; i++) {
+            fields[i] = rawFields[i].trim();
+        }
+
         // TODO Step 4: apply defaults for missing fields
         // TODO Step 5: parse currency -> price
         // TODO Step 6: normalize category
@@ -31,10 +37,4 @@ public class InventoryParser {
         return ','; // fallback default, matches assumptions.md
     }
 
-    public static void main(String[] args) {
-        System.out.println(detectDelimiter("P001,Widget|AcmeCorp"));   // expect ,
-        System.out.println(detectDelimiter("P002;Widget,AcmeCorp"));   // expect ;
-        System.out.println(detectDelimiter("P003|Widget;AcmeCorp"));   // expect |
-        System.out.println(detectDelimiter("P004 Widget AcmeCorp"));   // expect , (fallback)
-    }
 }
