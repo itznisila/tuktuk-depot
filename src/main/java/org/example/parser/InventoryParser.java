@@ -28,7 +28,7 @@ public class InventoryParser {
 
         double price = parsePrice(rawPrice);
 
-        // TODO Step 6: normalize category
+        String category = normalizeCategory(rawCategory);
         // TODO Step 7: parse date -> dateAdded
 
         return null; // placeholder until steps above are wired in
@@ -65,5 +65,18 @@ public class InventoryParser {
         return fields[idx];
     }
 
+    private static String normalizeCategory(String raw) {
+        String c = raw.trim().toUpperCase();
+        switch (c) {
+            case "ELEC":
+            case "ELECTRONIC":
+                return "ELECTRONICS";
+            case "HW":
+            case "HARDWARE ITEM":
+                return "HARDWARE";
+            default:
+                return c;
+        }
+    }
 
 }
