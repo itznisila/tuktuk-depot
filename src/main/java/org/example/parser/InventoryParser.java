@@ -25,7 +25,9 @@ public class InventoryParser {
         String rawCategory  = getField(fields, 5, "UNCATEGORIZED");
         String rawDate      = getField(fields, 6, "");
         String imagePath    = getField(fields, 7, "");
-        // TODO Step 5: parse currency -> price
+
+        double price = parsePrice(rawPrice);
+
         // TODO Step 6: normalize category
         // TODO Step 7: parse date -> dateAdded
 
@@ -44,11 +46,24 @@ public class InventoryParser {
         return ','; // fallback default, matches assumptions.md
     }
 
+    private static double parsePrice(String raw) throws ParseException {
+        String cleaned = raw.replaceAll("[^0-9.]", "");
+        if (cleaned.isEmpty()) {
+            return 0.0;
+        }
+        try {
+            return Double.parseDouble(cleaned);
+        } catch (NumberFormatException e) {
+            throw new ParseException("Invalid price: " + raw);
+        }
+    }
+
     private static String getField(String[] fields, int idx, String defaultVal) {
         if (idx >= fields.length || fields[idx].isBlank()) {
             return defaultVal;
         }
         return fields[idx];
     }
+
 
 }
