@@ -17,7 +17,14 @@ public class InventoryParser {
             fields[i] = rawFields[i].trim();
         }
 
-        // TODO Step 4: apply defaults for missing fields
+        String code        = getField(fields, 0, "UNKNOWN");
+        String name         = getField(fields, 1, "UNKNOWN");
+        String supplier     = getField(fields, 2, "UNKNOWN");
+        String rawPrice     = getField(fields, 3, "0");
+        String rawQuantity  = getField(fields, 4, "0");
+        String rawCategory  = getField(fields, 5, "UNCATEGORIZED");
+        String rawDate      = getField(fields, 6, "");
+        String imagePath    = getField(fields, 7, "");
         // TODO Step 5: parse currency -> price
         // TODO Step 6: normalize category
         // TODO Step 7: parse date -> dateAdded
@@ -35,6 +42,13 @@ public class InventoryParser {
             }
         }
         return ','; // fallback default, matches assumptions.md
+    }
+
+    private static String getField(String[] fields, int idx, String defaultVal) {
+        if (idx >= fields.length || fields[idx].isBlank()) {
+            return defaultVal;
+        }
+        return fields[idx];
     }
 
 }
