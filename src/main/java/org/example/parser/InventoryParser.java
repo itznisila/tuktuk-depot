@@ -27,11 +27,20 @@ public class InventoryParser {
         String imagePath    = getField(fields, 7, "");
 
         double price = parsePrice(rawPrice);
-
         String category = normalizeCategory(rawCategory);
-        // TODO Step 7: parse date -> dateAdded
+        java.time.LocalDate dateAdded = DateUtil.parseFlexibleDate(rawDate);
+        int quantity;
+        try {
+            quantity = Integer.parseInt(rawQuantity.replaceAll("[^0-9]", ""));
+        } catch (NumberFormatException e) {
+            throw new ParseException("Invalid quantity: " + rawQuantity);
+        }
 
-        return null; // placeholder until steps above are wired in
+        try {
+            return new Part(code, name, supplier, price, quantity, category, dateAdded, imagePath);
+        } catch (IllegalArgumentException e) {
+            throw new ParseException("Invalid Part data in line: " + line + " (" + e.getMessage() + ")");
+        }
     }
 
     private static char detectDelimiter(String line) {
@@ -43,7 +52,7 @@ public class InventoryParser {
                 }
             }
         }
-        return ','; // fallback default, matches assumptions.md
+        return ',';
     }
 
     private static double parsePrice(String raw) throws ParseException {
