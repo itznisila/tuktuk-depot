@@ -1,6 +1,11 @@
 package org.example.parser;
 
 import org.example.model.Part;
+import java.util.List;
+import java.util.ArrayList;
+import java.io.PrintWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class InventoryParser {
 
@@ -41,6 +46,29 @@ public class InventoryParser {
         } catch (IllegalArgumentException e) {
             throw new ParseException("Invalid Part data in line: " + line + " (" + e.getMessage() + ")");
         }
+    }
+
+    public static List<Part> parseFile(List<String> lines) {
+        List<Part> parts = new ArrayList<>();
+        List<String> errors = new ArrayList<>();
+
+        for (String line : lines) {
+            try {
+                parts.add(parseLine(line));
+            } catch (Exception e) {
+                errors.add(line + " | REASON: " + e.getMessage());
+            }
+        }
+
+        try (PrintWriter pw = new PrintWriter(new FileWriter("parse_errors.txt", true))) {
+            for (String err : errors) {
+                pw.println(err);
+            }
+        } catch (IOException ioe) {
+            System.err.println("Could not write parse_errors.txt: " + ioe.getMessage());
+        }
+
+        return parts;
     }
 
     private static char detectDelimiter(String line) {
